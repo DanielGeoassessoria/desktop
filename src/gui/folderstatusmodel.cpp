@@ -298,7 +298,7 @@ QVariant FolderStatusModel::data(const QModelIndex &index, int role) const
             }
         }
         if (total <= 0) {
-            return {};
+            return QStringLiteral("");
         }
         return tr("%1 of %2 used").arg(Utility::octetsToString(used), Utility::octetsToString(total));
     }
