@@ -1,4 +1,5 @@
-from behave import when as When, then as Then
+import time
+from behave import when as When, then as Then, given as Given
 from sure import ensure
 
 from pageObjects.SyncConnectionWizard import SyncConnectionWizard
@@ -108,7 +109,7 @@ def step(context):
     Toolbar.open_settings_tab()
 
 
-@Then('the table of conflict warnings should include file "|any|"')
+@Then('the table of conflict warnings should include file "{filename}"')
 def step(context, filename):
     Activity.check_file_exist(filename)
 
@@ -319,7 +320,7 @@ def step(context):
 @Then('the following activities should be displayed in not synced table')
 def step(context):
     _check_activities(context, not_synced=True)
-    
+
 
 @Then('the following activities should not be displayed in synced table')
 def step(context):
@@ -353,9 +354,9 @@ def step(context):
     )
 
 
-@Given('the user has waited for "|any|" seconds')
+@Given('the user has waited for "{wait_for}" seconds')
 def step(context, wait_for):
-    squish.snooze(float(wait_for))
+    time.sleep(float(wait_for))
 
 
 @When(

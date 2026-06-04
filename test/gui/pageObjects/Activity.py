@@ -13,7 +13,7 @@ from helpers.SyncHelper import wait_for
 class Activity:
     TAB_CONTAINER = SimpleNamespace(by=None, selector=None)
     SUBTAB_CONTAINER = SimpleNamespace(
-        by=By.CLASS_NAME, selector="[page tab | {tab_name}]"
+        by=By.XPATH, selector="//page_tab[starts-with(@name, '{tab_name}')]"
     )
     NOT_SYNCED_TABLE = SimpleNamespace(by=None, selector=None)
     LOCAL_ACTIVITY_FILTER_BUTTON = SimpleNamespace(by=By.NAME, selector="Filter")
@@ -28,6 +28,7 @@ class Activity:
     NOT_SYNCED_FILTER_OPTION_SELECTOR = SimpleNamespace(by=None, selector=None)
     SYNCED_ACTIVITY_TABLE_HEADER_SELECTOR = SimpleNamespace(by=None, selector=None)
     NOT_SYNCED_ACTIVITY_TABLE_HEADER_SELECTOR = SimpleNamespace(by=None, selector=None)
+    NOT_SYNCED_ACTIVITY_CONFLICT_FILE = SimpleNamespace(by=By.XPATH, selector="//*[contains(@name, 'conflicted copy')]")
     SYNCED_ACTIVITY_STATUS = SimpleNamespace(by=By.NAME, selector=None)
 
     @staticmethod
@@ -57,10 +58,11 @@ class Activity:
 
     @staticmethod
     def check_file_exist(filename):
-        squish.waitForObjectExists(
-            Activity.get_not_synced_file_selector(
-                RegularExpression(build_conflicted_regex(filename))
-            )
+        wait_for(
+            lambda: app().find_element(
+                Activity.NOT_SYNCED_ACTIVITY_CONFLICT_FILE.by,
+                Activity.NOT_SYNCED_ACTIVITY_CONFLICT_FILE.selector
+            ), get_config("lowestSyncTimeout") * 100
         )
 
     @staticmethod
