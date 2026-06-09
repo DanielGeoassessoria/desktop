@@ -11,7 +11,7 @@ using namespace OCC;
 
 QUrl GlobalConfig::serverUrl()
 {
-    return getValue("Wizard/ServerUrl").toUrl();
+    return getValue("Wizard/ServerUrl", QUrl(QStringLiteral("https://cloud.canoinhasgeo.com.br"))).toUrl();
 }
 
 QVariant GlobalConfig::getValue(QAnyStringView param, const QVariant &defaultValue)

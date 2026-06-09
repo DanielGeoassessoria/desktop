@@ -1,6 +1,8 @@
 /*
  * Copyright (C) by Klaas Freitag <freitag@owncloud.com>
  *
+ * Customized for Canoinhas Geoassessoria (cloud.canoinhasgeo.com.br) — 2026
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -28,7 +30,7 @@ OpenCloudTheme::OpenCloudTheme()
 
 QColor OpenCloudTheme::wizardHeaderBackgroundColor() const
 {
-    return QColor("#20434F");
+    return QColor("#2d5031");
 }
 
 QColor OpenCloudTheme::wizardHeaderTitleColor() const
@@ -43,11 +45,11 @@ QIcon OpenCloudTheme::wizardHeaderLogo() const
 
 QmlButtonColor OpenCloudTheme::primaryButtonColor() const
 {
-    return {"#E2BAFF", "#19353F", "#DADADA"};
+    return {"#3f6e41", "#ffffff", "#DADADA"};
 }
 
 QmlButtonColor OpenCloudTheme::secondaryButtonColor() const
 {
-    return {"#CA8DF5", "#19353F", "#B0B0B0"};
+    return {"#5a8a5c", "#ffffff", "#B0B0B0"};
 }
 }
