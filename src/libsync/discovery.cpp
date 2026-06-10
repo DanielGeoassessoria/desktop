@@ -986,8 +986,8 @@ void ProcessDirectoryJob::processFileFinalize(
             // Conflito (arquivo modificado em ambos) — preserva servidor
             item->setInstruction(CSYNC_INSTRUCTION_IGNORE);
         } else if (item->_direction == SyncFileItem::Down && isDir) {
-            // Pasta seria deletada localmente — apenas marca como NONE pra recursão continuar
-            item->setInstruction(CSYNC_INSTRUCTION_NONE);
+            // Pasta seria deletada localmente — só atualiza metadata pra recursão continuar limpa
+            item->setInstruction(CSYNC_INSTRUCTION_UPDATE_METADATA);
         }
     }
 
