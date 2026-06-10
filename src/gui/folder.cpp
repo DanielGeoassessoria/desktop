@@ -91,8 +91,9 @@ Folder::Folder(const FolderDefinition &definition, const AccountStatePtr &accoun
         _engine.reset(new SyncEngine(_accountState->account(), webDavUrl(), path(), {}, &_journal));
         // pass the setting if hidden files are to be ignored, will be read in csync_update
         _engine->setIgnoreHiddenFiles(_definition.ignoreHiddenFiles);
-        // Canoinhas Geo: ativa upload-only se env GEOCLOUD_UPLOAD_ONLY=1 (MVP - UI vem depois)
-        _engine->setUploadOnly(_definition.uploadOnly || qEnvironmentVariable("GEOCLOUD_UPLOAD_ONLY") == QStringLiteral("1"));
+        // Canoinhas Geo: HARDCODED ON pra teste MVP (após validar, vira flag por folder)
+        _engine->setUploadOnly(true);
+        qCWarning(lcFolder) << u"[Canoinhas] UPLOAD-ONLY MODE ACTIVE — server is sacred";
 
         if (!_engine->loadDefaultExcludes()) {
             qCWarning(lcFolder, "Could not read system exclude file");
@@ -881,7 +882,7 @@ void Folder::startSync()
     }
 
     _engine->setIgnoreHiddenFiles(_definition.ignoreHiddenFiles);
-    _engine->setUploadOnly(_definition.uploadOnly || qEnvironmentVariable("GEOCLOUD_UPLOAD_ONLY") == QStringLiteral("1"));
+    _engine->setUploadOnly(true);
     _engine->startSync();
 }
 
