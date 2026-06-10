@@ -228,11 +228,11 @@ AccountStatePtr Application::addNewAccount(AccountPtr newAccount)
     // first things first: we need to add the new account
     auto accountStatePtr = accountMan->addAccount(newAccount);
 
-    // if one account is configured: enable autostart
-    bool shouldSetAutoStart = (accountMan->accounts().size() == 1);
+    // Canoinhas Geo: SEMPRE ativa autostart em qualquer login (equipe campo deve sincronizar background)
+    bool shouldSetAutoStart = true;
 #ifdef Q_OS_MAC
     // Don't auto start when not being 'installed'
-    shouldSetAutoStart = shouldSetAutoStart && QCoreApplication::applicationDirPath().startsWith(QLatin1String("/Applications/"));
+    shouldSetAutoStart = QCoreApplication::applicationDirPath().startsWith(QLatin1String("/Applications/"));
 #endif
     if (shouldSetAutoStart) {
         Utility::setLaunchOnStartup(Theme::instance()->appName(), Theme::instance()->appNameGUI(), true);
