@@ -83,6 +83,7 @@ void FolderDefinition::save(QSettings &settings, const FolderDefinition &folder)
     settings.setValue(displayNameC(), folder.displayName());
     settings.setValue("paused", folder.paused);
     settings.setValue("ignoreHiddenFiles", folder.ignoreHiddenFiles);
+    settings.setValue("uploadOnly", folder.uploadOnly);
     settings.setValue(deployedC(), folder.isDeployed());
     settings.setValue(priorityC(), folder.priority());
 
@@ -98,6 +99,7 @@ FolderDefinition FolderDefinition::load(QSettings &settings)
     folder.journalPath = settings.value("journalPath").toString();
     folder.paused = settings.value("paused").toBool();
     folder.ignoreHiddenFiles = settings.value("ignoreHiddenFiles", QVariant(true)).toBool();
+    folder.uploadOnly = settings.value("uploadOnly", QVariant(false)).toBool();
     folder._deployed = settings.value(deployedC(), false).toBool();
     folder._priority = settings.value(priorityC(), 0).toUInt();
 

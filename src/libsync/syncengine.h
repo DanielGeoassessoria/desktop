@@ -72,6 +72,10 @@ public:
     bool ignoreHiddenFiles() const { return _ignore_hidden_files; }
     void setIgnoreHiddenFiles(bool ignore) { _ignore_hidden_files = ignore; }
 
+    // Canoinhas Geo: upload-only mode - só sobe, não baixa, não propaga deletes
+    bool uploadOnly() const { return _upload_only; }
+    void setUploadOnly(bool uploadOnly) { _upload_only = uploadOnly; }
+
     bool isExcluded(QStringView filePath) const;
     void addManualExclude(const QString &filePath);
     void addExcludeList(const QString &filePath);
@@ -222,6 +226,9 @@ private:
 
     // If ignored files should be ignored
     bool _ignore_hidden_files = false;
+
+    // Canoinhas Geo: upload-only mode (no downloads, no remote deletes propagated)
+    bool _upload_only = false;
 
 
     int _uploadLimit;

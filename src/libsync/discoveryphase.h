@@ -208,6 +208,8 @@ public:
     QRegularExpression _invalidFilenameRx; // FIXME: maybe move in ExcludedFiles
     QStringList _serverBlacklistedFiles; // The blacklist from the capabilities
     bool _ignoreHiddenFiles = false;
+    // Canoinhas Geo: upload-only mode (skip downloads + skip remote deletes)
+    bool _uploadOnly = false;
     std::function<bool(const QString &)> _shouldDiscoverLocaly;
 
     void startJob(ProcessDirectoryJob *);

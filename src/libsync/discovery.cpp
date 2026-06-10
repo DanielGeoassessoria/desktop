@@ -597,8 +597,13 @@ void ProcessDirectoryJob::processFileAnalyzeLocalInfo(
             // Not modified locally (ParentNotChanged)
             if (noServerEntry) {
                 // not on the server: Removed on the server, delete locally
-                item->setInstruction(CSYNC_INSTRUCTION_REMOVE);
-                item->_direction = SyncFileItem::Down;
+                // Canoinhas Geo upload-only: NÃO deleta local (ignora)
+                if (!_discoveryData->_uploadOnly) {
+                    item->setInstruction(CSYNC_INSTRUCTION_REMOVE);
+                    item->_direction = SyncFileItem::Down;
+                } else {
+                    item->setInstruction(CSYNC_INSTRUCTION_IGNORE);
+                }
             } else if (dbEntry.type() == ItemTypeVirtualFileDehydration) {
                 // dehydration requested
                 item->_direction = SyncFileItem::Down;
@@ -612,9 +617,12 @@ void ProcessDirectoryJob::processFileAnalyzeLocalInfo(
             return;
         } else if (!serverModified) {
             // Removed locally: also remove on the server.
-            if (!dbEntry.serverHasIgnoredFiles()) {
+            // Canoinhas Geo upload-only: NÃO propaga delete pro servidor
+            if (!_discoveryData->_uploadOnly && !dbEntry.serverHasIgnoredFiles()) {
                 item->setInstruction(CSYNC_INSTRUCTION_REMOVE);
                 item->_direction = SyncFileItem::Up;
+            } else if (_discoveryData->_uploadOnly) {
+                item->setInstruction(CSYNC_INSTRUCTION_IGNORE);
             }
         }
 
@@ -964,6 +972,11 @@ void ProcessDirectoryJob::processFileFinalize(
         item->setInstruction(CSYNC_INSTRUCTION_RENAME);
         item->_renameTarget = path._target;
         item->_direction = _dirItem->_direction;
+    }
+
+    // Canoinhas Geo upload-only: pula tudo que viria do servidor pro local (downloads, deletes locais)
+    if (_discoveryData->_uploadOnly && item->_direction == SyncFileItem::Down) {
+        item->setInstruction(CSYNC_INSTRUCTION_IGNORE);
     }
 
     qCInfo(lcDisco) << u"Discovered" << item->localName() << item->instruction() << item->_direction << item->_type;

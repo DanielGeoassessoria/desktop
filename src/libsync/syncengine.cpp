@@ -410,6 +410,7 @@ void SyncEngine::startSync()
     }
     _discoveryPhase->_serverBlacklistedFiles = _account->capabilities().blacklistedFiles();
     _discoveryPhase->_ignoreHiddenFiles = ignoreHiddenFiles();
+    _discoveryPhase->_uploadOnly = uploadOnly();
 
     connect(_discoveryPhase.get(), &DiscoveryPhase::itemDiscovered, this, &SyncEngine::slotItemDiscovered);
     connect(_discoveryPhase.get(), &DiscoveryPhase::fatalError, this, &SyncEngine::abort);

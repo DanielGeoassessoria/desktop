@@ -41,6 +41,8 @@ public:
     bool ignoreHiddenFiles = true;
     /// Which virtual files setting the folder uses
     Vfs::Mode virtualFilesMode = Vfs::Mode::Off;
+    /// Upload-only mode: deletes locais não propagam pro servidor (Canoinhas Geo)
+    bool uploadOnly = false;
 
     /// Saves the folder definition into the current settings.
     static void save(QSettings &settings, const FolderDefinition &folder);
