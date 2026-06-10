@@ -369,22 +369,13 @@ Pane {
         RowLayout {
             Layout.fillWidth: true
 
+            // Canoinhas Geo: botão "Add Space" oculto - equipe campo só usa Personal Space
             Button {
                 id: addSyncButton
+                visible: false
                 text: qsTr("Add Space")
-
-                onClicked: {
-                    accountSettings.slotAddFolder();
-                }
-                enabled: (accountSettings.accountState.state === AccountState.Connected) && accountSettings.unsyncedSpaces
-
-                Keys.onBacktabPressed: {
-                    listView.currentItem.forceActiveFocus(Qt.TabFocusReason);
-                }
-
-                Keys.onTabPressed: {
-                    widget.parentFocusWidget.focusNext();
-                }
+                onClicked: { accountSettings.slotAddFolder(); }
+                enabled: false
             }
             Item {
                 // spacer

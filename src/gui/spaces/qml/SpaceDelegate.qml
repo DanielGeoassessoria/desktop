@@ -43,7 +43,7 @@ Item {
                 Layout.preferredWidth: normalSize - 20
                 Layout.alignment: Qt.AlignTop
 
-                color: spaceDelegate.palette.alternateBase
+                color: "#2D5031"  // Canoinhas Geo - verde no fundo do ícone de Space
 
                 Image {
                     id: image
