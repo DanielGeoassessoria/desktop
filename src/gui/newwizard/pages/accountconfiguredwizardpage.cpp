@@ -61,9 +61,8 @@ AccountConfiguredWizardPage::AccountConfiguredWizardPage(const QString &defaultS
         _ui->localDirectoryGroupBox->setEnabled(!checked);
     });
 
-    // toggle once to have the according handlers set up the initial UI state
+    // Canoinhas Geo: sempre mostra opções avançadas (campo de pasta local visível por default)
     _ui->advancedConfigGroupBox->setChecked(true);
-    _ui->advancedConfigGroupBox->setChecked(false);
 
     // allows resetting local directory to default value once changed
     _ui->resetLocalDirectoryButton->setIcon(Resources::FontIcon(u''));
