@@ -320,7 +320,8 @@ QIcon Theme::wizardHeaderLogo() const
 
 QString Theme::oauthClientId() const
 {
-    return QStringLiteral("OpenCloudDesktop");
+    // Reusa client_id do app OIDC Web existente no Authentik (sem precisar criar app separada)
+    return QStringLiteral("meWMsc4Vwt5Je3NJhAtAerK8ocXPwzOc2W3BCl9D");
 }
 
 QString Theme::oauthClientSecret() const
