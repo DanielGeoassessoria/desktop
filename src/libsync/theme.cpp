@@ -342,7 +342,8 @@ QVector<quint16> Theme::oauthPorts() const
 
 QString Theme::openIdConnectScopes() const
 {
-    return QStringLiteral("openid offline_access email profile");
+    // Inclui groups + roles para o OpenCloud mapear permissões (mesmo escopo que o Web usa)
+    return QStringLiteral("openid offline_access email profile groups roles");
 }
 
 QString Theme::openIdConnectPrompt() const
