@@ -597,13 +597,12 @@ void ProcessDirectoryJob::processFileAnalyzeLocalInfo(
             // Not modified locally (ParentNotChanged)
             if (noServerEntry) {
                 // not on the server: Removed on the server, delete locally
-                // Canoinhas Geo upload-only: NÃO deleta local (ignora)
+                // Canoinhas Geo upload-only: NÃO deleta local (no-op)
                 if (!_discoveryData->_uploadOnly) {
                     item->setInstruction(CSYNC_INSTRUCTION_REMOVE);
                     item->_direction = SyncFileItem::Down;
-                } else {
-                    item->setInstruction(CSYNC_INSTRUCTION_IGNORE);
                 }
+                // else: leave instruction unchanged (NONE/NEW) so next discovery doesn't lose track
             } else if (dbEntry.type() == ItemTypeVirtualFileDehydration) {
                 // dehydration requested
                 item->_direction = SyncFileItem::Down;
@@ -617,13 +616,12 @@ void ProcessDirectoryJob::processFileAnalyzeLocalInfo(
             return;
         } else if (!serverModified) {
             // Removed locally: also remove on the server.
-            // Canoinhas Geo upload-only: NÃO propaga delete pro servidor
+            // Canoinhas Geo upload-only: NÃO propaga delete pro servidor (deixa instrução padrão)
             if (!_discoveryData->_uploadOnly && !dbEntry.serverHasIgnoredFiles()) {
                 item->setInstruction(CSYNC_INSTRUCTION_REMOVE);
                 item->_direction = SyncFileItem::Up;
-            } else if (_discoveryData->_uploadOnly) {
-                item->setInstruction(CSYNC_INSTRUCTION_IGNORE);
             }
+            // else (upload-only): não faz nada, mantém DB intacto pra próxima discovery
         }
 
         finalize(path, recurseQueryServer);
@@ -975,17 +973,21 @@ void ProcessDirectoryJob::processFileFinalize(
     }
 
     // Canoinhas Geo upload-only ("servidor sagrado"):
-    // - Pula tudo que viria do servidor pro local (downloads, deletes locais)
-    // - Pula sobrescrita de arquivos existentes no servidor (preserva versão remota)
+    // - Bloqueia downloads, deletes locais e sobrescritas DE ARQUIVOS apenas
+    // - Em pastas: deixa NONE (não-op) para preservar recursão nos filhos
     if (_discoveryData->_uploadOnly) {
-        if (item->_direction == SyncFileItem::Down) {
+        const bool isDir = item->isDirectory();
+        if (item->_direction == SyncFileItem::Down && !isDir) {
             item->setInstruction(CSYNC_INSTRUCTION_IGNORE);
-        } else if (item->_direction == SyncFileItem::Up && item->instruction() == CSYNC_INSTRUCTION_SYNC) {
+        } else if (item->_direction == SyncFileItem::Up && item->instruction() == CSYNC_INSTRUCTION_SYNC && !isDir) {
             // Arquivo já existia no servidor — não sobrescreve
             item->setInstruction(CSYNC_INSTRUCTION_IGNORE);
-        } else if (item->_direction == SyncFileItem::Up && item->instruction() == CSYNC_INSTRUCTION_CONFLICT) {
+        } else if (item->_direction == SyncFileItem::Up && item->instruction() == CSYNC_INSTRUCTION_CONFLICT && !isDir) {
             // Conflito (arquivo modificado em ambos) — preserva servidor
             item->setInstruction(CSYNC_INSTRUCTION_IGNORE);
+        } else if (item->_direction == SyncFileItem::Down && isDir) {
+            // Pasta seria deletada localmente — apenas marca como NONE pra recursão continuar
+            item->setInstruction(CSYNC_INSTRUCTION_NONE);
         }
     }
 
