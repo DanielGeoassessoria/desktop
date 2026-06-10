@@ -90,16 +90,9 @@ QString AccountConfiguredWizardPage::syncTargetDir() const
 
 SyncMode AccountConfiguredWizardPage::syncMode() const
 {
-    if (_ui->syncEverythingRadioButton->isChecked()) {
-        if (VfsPluginManager::instance().bestAvailableVfsMode() != Vfs::Mode::Off) {
-            return SyncMode::UseVfs;
-        }
-        return SyncMode::SyncEverything;
-    }
-    if (_ui->configureSyncManuallyRadioButton->isChecked()) {
-        return SyncMode::ConfigureUsingFolderWizard;
-    }
-    Q_UNREACHABLE();
+    // Canoinhas Geo: sempre SyncEverything (sem VFS, sem perguntar opções)
+    // Personal Space é filtrado em setUpInitialSyncFolder
+    return SyncMode::SyncEverything;
 }
 
 bool AccountConfiguredWizardPage::validateInput() const

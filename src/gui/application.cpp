@@ -79,6 +79,9 @@ void setUpInitialSyncFolder(AccountStatePtr accountStatePtr, bool useVfs)
             auto spaces = accountStatePtr->account()->spacesManager()->spaces();
             // we do not want to set up folder sync connections for disabled spaces (#10173)
             spaces.erase(std::remove_if(spaces.begin(), spaces.end(), [](auto *space) { return space->disabled(); }), spaces.end());
+            // Canoinhas Geo: sincroniza só Personal Space (equipe de campo só usa "Pessoal" pra upload de voos)
+            spaces.erase(std::remove_if(spaces.begin(), spaces.end(),
+                [](auto *space) { return space->drive().getDriveType() != QStringLiteral("personal"); }), spaces.end());
 
             if (!spaces.isEmpty()) {
                 const QString localDir(accountStatePtr->account()->defaultSyncRoot());
