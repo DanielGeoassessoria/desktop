@@ -974,9 +974,19 @@ void ProcessDirectoryJob::processFileFinalize(
         item->_direction = _dirItem->_direction;
     }
 
-    // Canoinhas Geo upload-only: pula tudo que viria do servidor pro local (downloads, deletes locais)
-    if (_discoveryData->_uploadOnly && item->_direction == SyncFileItem::Down) {
-        item->setInstruction(CSYNC_INSTRUCTION_IGNORE);
+    // Canoinhas Geo upload-only ("servidor sagrado"):
+    // - Pula tudo que viria do servidor pro local (downloads, deletes locais)
+    // - Pula sobrescrita de arquivos existentes no servidor (preserva versão remota)
+    if (_discoveryData->_uploadOnly) {
+        if (item->_direction == SyncFileItem::Down) {
+            item->setInstruction(CSYNC_INSTRUCTION_IGNORE);
+        } else if (item->_direction == SyncFileItem::Up && item->instruction() == CSYNC_INSTRUCTION_SYNC) {
+            // Arquivo já existia no servidor — não sobrescreve
+            item->setInstruction(CSYNC_INSTRUCTION_IGNORE);
+        } else if (item->_direction == SyncFileItem::Up && item->instruction() == CSYNC_INSTRUCTION_CONFLICT) {
+            // Conflito (arquivo modificado em ambos) — preserva servidor
+            item->setInstruction(CSYNC_INSTRUCTION_IGNORE);
+        }
     }
 
     qCInfo(lcDisco) << u"Discovered" << item->localName() << item->instruction() << item->_direction << item->_type;
